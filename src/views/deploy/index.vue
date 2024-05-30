@@ -332,7 +332,7 @@
 
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue'
-import common from '../common/Config'
+// import common from '../common/Config'
 import yaml2obj from 'js-yaml'
 import json2yaml from 'json2yaml'
 import {
@@ -449,7 +449,7 @@ const getNamespaces = () => {
 const getDeployments = () => {
   appLoading.value = true
   const getDeploymentsData = {
-    url: common.k8sDeploymentList,
+    // url: common.k8sDeploymentList,
     params: {
       filter_name: searchInput.value,
       namespace: namespaceValue.value,
@@ -622,15 +622,32 @@ const createDeployFunc = () => {
   createDeploymentDrawer.value = false
 }
 
-const resetForm = (formName) => {
-  if (this.$refs[formName]) {
-    this.$refs[formName].resetFields()
+// 重置表单方法
+const resetForm = () => {
+  if (createDeploymentForm.value) {
+    createDeploymentForm.value.resetFields()
   }
 }
+// const resetForm = (formName) => {
+//   if (this.$refs[formName]) {
+//     this.$refs[formName].resetFields()
+//   }
+// }
 
-const submitForm = (formName) => {
-  if (this.$refs[formName]) {
-    this.$refs[formName].validate((valid) => {
+// const submitForm = (formName) => {
+//   if (this.$refs[formName]) {
+//     this.$refs[formName].validate((valid) => {
+//       if (valid) {
+//         createDeployFunc()
+//       } else {
+//         return false
+//       }
+//     })
+//   }
+// }
+const submitForm = () => {
+  if (createDeploymentForm.value) {
+    createDeploymentForm.value.validate((valid) => {
       if (valid) {
         createDeployFunc()
       } else {

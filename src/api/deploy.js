@@ -20,17 +20,49 @@ export function getdeploymentlist(namespace) {
   })
 }
 
-export function getDeploymentByNs(data) {
+export function getdeploymentdetail(data) {
+  const namespace = data.namespace
+  const deploy = data.deployment_name
   return service({
-    url: '/api/v1/proxy/deployment/numnp',
-    method: 'get',
-    params: data
+    url: `/api/v1/proxy/apis/apps/v1/namespaces/${namespace}/deployments/${deploy}`,
+    method: 'get'
+    // params: data
   })
 }
 
-export function getdeploymentdetail(data) {
+export function scaledeployment(data) {
+  // const [namespace, name] = deploymentIdentifier.split('/')
+  const namespace = data.namespace
+  const name = data.deployment_name
+  const replicas = data.scale_num
+  return service.put(
+    `/api/v1/proxy/apis/apps/v1/namespaces/${namespace}/deployments/${name}/scale`,
+    {
+      apiVersion: 'autoscaling/v1',
+      kind: 'Scale',
+      metadata: {
+        name: name,
+        namespace: namespace
+      },
+      spec: {
+        replicas: replicas
+      }
+    }
+  )
+}
+
+export function deleteDeployment(data) {
+  const name = data.deployment_name
+  const namespace = data.namespace
   return service({
-    url: '/api/v1/proxy/deployment/detail',
+    url: `/api/v1/proxy/apis/apps/v1/namespaces/${namespace}/deployments/${name}`,
+    method: 'delete'
+  })
+}
+
+export function getDeploymentByNs(data) {
+  return service({
+    url: '/api/v1/proxy/deployment/numnp',
     method: 'get',
     params: data
   })
@@ -40,14 +72,6 @@ export function updatedeployment(data) {
   return service({
     url: '/api/v1/proxy/deployment/update',
     method: 'put',
-    params: data
-  })
-}
-
-export function scaledeployment(data) {
-  return service({
-    url: '/api/v1/proxy/deployment/scale',
-    method: 'get',
     params: data
   })
 }
@@ -68,18 +92,10 @@ export function createDeployment(data) {
   })
 }
 
-export function deleteDeployment(data) {
-  return service({
-    url: '/api/v1/proxy/deployment/del',
-    method: 'delete',
-    params: data
-  })
-}
-
-export function deleteDeployment1(deploymentIdentifier) {
-  const [namespace, name] = deploymentIdentifier.split('/')
-  return service({
-    url: `/apis/apps/v1/namespaces/${namespace}/deployments/${name}`,
-    method: 'delete'
-  })
-}
+// export function deleteDeployment(data) {
+//   return service({
+//     url: '/api/v1/proxy/deployment/del',
+//     method: 'delete',
+//     params: data
+//   })
+// }
