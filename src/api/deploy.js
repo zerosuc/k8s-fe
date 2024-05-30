@@ -76,11 +76,29 @@ export function updatedeployment(data) {
   })
 }
 
-export function restartdeployment(data) {
+export function restartdeployment(dataInput) {
+  const name = dataInput.deployment_name
+  const namespace = dataInput.namespace
+  const url = `/api/v1/proxy/apis/apps/v1/namespaces/${namespace}/deployments/${name}`
+  const data = {
+    spec: {
+      template: {
+        metadata: {
+          annotations: {
+            'kubectl.kubernetes.io/restartedAt': new Date().toISOString()
+          }
+        }
+      }
+    }
+  }
+
   return service({
-    url: '/api/v1/proxy/deployment/restart',
-    method: 'put',
-    params: data
+    url: url,
+    method: 'patch',
+    headers: {
+      'Content-Type': 'application/strategic-merge-patch+json'
+    },
+    data: data
   })
 }
 
@@ -91,11 +109,3 @@ export function createDeployment(data) {
     data
   })
 }
-
-// export function deleteDeployment(data) {
-//   return service({
-//     url: '/api/v1/proxy/deployment/del',
-//     method: 'delete',
-//     params: data
-//   })
-// }
